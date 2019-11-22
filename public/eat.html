@@ -82,9 +82,9 @@
           var listItem = $("<li class='list-group-item mt-4'>");
 
           listItem.append(
-            $("<h4>").text("ID: " + tableData[i].id),
-            $("<h4>").text("Eating Start: " + tableData[i].timeStart),
-            $("<h4>").text("Eating End: " + tableData[i].timeEnd)
+            $("<h6>").text("Eating Start: " + tableData[i].timeStart),
+            $("<h6>").text("Eating End: " + tableData[i].timeEnd),
+            $("<h6>").text("Eating Duration: " + tableData[i].duration + " minutes")
           );
 
           tableList.append(listItem);

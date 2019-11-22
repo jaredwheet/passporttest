@@ -28,7 +28,7 @@ module.exports = function(app) {
     res.sendFile(path.join(__dirname, "../public/members.html"));
   });
 
-  app.get("/sleep/:username", isAuthenticated, function(req, res) {
+  app.get("/sleep/", isAuthenticated, function(req, res) {
     if (req.user) {
         console.log("username is " + req.user.username)
         res.redirect("/sleep.html");

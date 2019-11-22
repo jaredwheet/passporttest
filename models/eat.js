@@ -7,8 +7,11 @@ module.exports = function(sequelize, DataTypes) {
       },
       timeEnd: {
         type: DataTypes.STRING,
+        allowNull: false,          
+      },
+      duration: {
+        type: DataTypes.FLOAT,
         allowNull: false,
-          
       },
       username: {
         type: DataTypes.STRING,

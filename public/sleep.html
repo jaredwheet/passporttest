@@ -63,42 +63,44 @@
     $.get("/api/user_data").then(function (data) {
       $(".member-name").text(data.username);
       var username = data.username
-      // In this code, jQuery is used to "download" the data from our server
-      // We then dynamically display this content in our table. This is very similar to the group projects you just completed.
-      // It's also very similar to the NYT search application. In fact, I copied a ton of code from there.
-
-      function runFeedingQuery() {
-        // The AJAX function uses the URL of our API to GET the data associated with it (initially set to localhost)
-        $.ajax({ url: "/api/sleepData:" + username, method: "GET" })
-          .then(function (tableData) {
-
-            // Here we then log the tableData to console, where it will show up as an object.
-            console.log(tableData);
-            console.log("------------------------------------");
-            // Loop through and display each of the customers
-            for (var i = 0; i < tableData.length; i++) {
-
-              // Get a reference to the tableList element and populate it with tables
-              var tableList = $("#tableList");
-
-              // Then display the fields in the HTML (Section Name, Date, URL)
-              var listItem = $("<li class='list-group-item mt-4'>");
-
-              listItem.append(
-                $("<h4>").text("ID: " + tableData[i].id),
-                $("<h4>").text("Sleeping Start: " + tableData[i].timeStart),
-                $("<h4>").text("Sleeping End: " + tableData[i].timeEnd)
-              );
-
-              tableList.append(listItem);
-            }
-          })
-      }
+      console.log("username is: " + username)
 
 
-    });
-  });
-  runFeedingQuery();
+      $.get("/api/sleepData/" + username, function (req, res) {
+        console.log("Request:" + req)
+      })
+        .then(function (tableData) {
+          console.log(tableData);
+          console.log("------------------------------------");
+          for (var i = 0; i < tableData.length; i++) {
+            var tableList = $("#tableList");
+            var listItem = $("<li class='list-group-item mt-4'>");
+            listItem.append(
+              $("<h6>").text("Sleeping Start: " + tableData[i].timeStart),
+              $("<h6>").text("Sleeping End: " + tableData[i].timeEnd),
+              $("<h6>").text("Sleep Duration: " + tableData[i].duration + " minutes")
+            );
+
+            tableList.append(listItem);
+          }
+        });
+
+    })
+  })
+
+
+  //        
+  //       }
+  //     })
+  // })
+
+  // runFeedingQuery();
+
+
+
+
+
+
 
 
 </script>

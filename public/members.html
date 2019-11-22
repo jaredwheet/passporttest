@@ -42,7 +42,7 @@
     <div class="card-header">
       Baby last slept
     </div>
-    <a href="/api/sleepData/jw">Sleeping History</a>
+    <a href="/sleep">Sleeping History</a>
 
   </div>
 
@@ -102,22 +102,24 @@
         var username = data.username
         $("#feed").on("click", function (event) {
           event.preventDefault();
-  
-          var feedingStartTimestamp = moment().format('YYYY-MM-DD, hh:mm:ss')
-  
+
+          var feedingStartTimestamp = moment().format('LLLL')
+          var a = moment()
+
           // This is used to change button text, to indicated if feeding has been started.
           var $this = $(this);
           $this.toggleClass('feedingStarted');
-  
+
           if ($this.hasClass('feedingStarted')) {
             $this.text('End Feeding');
             $this.on("click", function (event) {
-              var feedingEndTimestamp = moment().format('YYYY-MM-DD, hh:mm:ss')
-              console.log(username)
-              console.log(feedingStartTimestamp, feedingEndTimestamp)
+              var feedingEndTimestamp = moment().format('LLLL')
+              var b = moment()
+              var duration = b.diff(a, 'minutes')            
               var newEatingTimestamp = {
                 timeStart: feedingStartTimestamp,
                 timeEnd: feedingEndTimestamp,
+                duration: duration,
                 username: username,
               };
               $.post("/api/eatingData", newEatingTimestamp,
@@ -126,85 +128,92 @@
                 });
               location.reload();
             });
-  
+
           }
           else {
             $this.text('Start Feeding')
-  
-  
+
+
           }
         });
         $("#sleep").on("click", function (event) {
           event.preventDefault();
-          var sleepingStartTimestamp = moment().format('YYYY-MM-DD, hh:mm:ss')
-          
+          var sleepingStartTimestamp = moment().format('LLLL')
+          //Need the current time to remain a moment object for duration calculation
+          var a = moment()
           // This is used to change button text, to indicated if feeding has been started.
           var $this = $(this);
           $this.toggleClass('sleepingStarted');
-          
+
           if ($this.hasClass('sleepingStarted')) {
-          $this.text('End Sleeping');
-          $this.on("click", function (event) {
-            var sleepingEndTimestamp = moment().format('YYYY-MM-DD, hh:mm:ss')
-            console.log(sleepingStartTimestamp, sleepingEndTimestamp)
-            var newSleepTimestamp = {
-              timeStart: sleepingStartTimestamp,
-              timeEnd: sleepingEndTimestamp,
-              username: username,
-            };
-            $.post("/api/sleepData", newSleepTimestamp,
+            $this.text('End Sleeping');
+            $this.on("click", function (event) {
+              var sleepingEndTimestamp = moment().format('LLLL')    
+              // need the end sleep time to remain a moment object for the duration calculation                      
+              var b = moment()
+              var duration = b.diff(a, 'minutes')
+              console.log(duration)
+
+              var newSleepTimestamp = {
+                timeStart: sleepingStartTimestamp,
+                timeEnd: sleepingEndTimestamp,
+                duration: duration,
+                username: username,
+              };
+
+              $.post("/api/sleepData", newSleepTimestamp,
+                function (data) {
+                  console.log(data)
+                });
+              location.reload();
+            });
+
+          }
+          else {
+            $this.text('Start Sleeping')
+
+
+          }
+        });
+        $("#vitalsSubmit").on("click", function (event) {
+          event.preventDefault();
+          currentTime = moment().format('LLLL')
+
+          var newVitals = {
+            timestamp: currentTime,
+            height: parseFloat($("#height").val().trim()),
+            weight: parseFloat($("#weight").val().trim()),
+            username: username
+          };
+          console.log("submitting vitals")
+          console.log(newVitals)
+
+          $.post("/api/vitalsData", newVitals,
             function (data) {
               console.log(data)
             });
-            location.reload();
-          });
-          
-        }
-        else {
-          $this.text('Start Sleeping')
-          
-          
-        }
+          $("#height").val("");
+          $("#weight").val("");
+          alert("Baby Vitals has been submitted and saved!")
+        })
       });
-      $("#vitalsSubmit").on("click", function (event) {
-        event.preventDefault();
-        currentTime = moment().format('YYYY-MM-DD, hh:mm:ss')
-        
-        var newVitals = {
-          timestamp: currentTime,
-          height: parseFloat($("#height").val().trim()),
-          weight: parseFloat($("#weight").val().trim()),
-          username: username
-        };
-        console.log("submitting vitals")
-        console.log(newVitals)
-        
-        $.post("/api/vitalsData", newVitals,
-        function (data) {
-          console.log(data)
-        });
-        $("#height").val("");
-        $("#weight").val("");
-        alert("Baby Vitals has been submitted and saved!")
-      })
     });
-  });
     // In this code below we create the Front-end JavaScript which "POSTS" our form data to our express server.
     // In essence, when the user hits submit, jQuery grabs all of the fields then sends a post request to our api
     // Our api recognizes the route (/api/tables)... and then runs the associated code (found in api-routes.js).
     // In this case the associated code "saves" the data to the table-data.js file or waitinglist-data.js file
-    
-    
-    
-    
-    
-    </script>
-    
-    
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+
+
+  </script>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript" src="js/members.js"></script>
-  
+
 </body>
 
 </html>

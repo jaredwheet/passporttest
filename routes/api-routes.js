@@ -64,6 +64,7 @@ module.exports = function (app) {
         db.Eat.create({
             timeStart: req.body.timeStart,
             timeEnd: req.body.timeEnd,
+            duration: req.body.duration,
             username: req.body.username
         })
             .then(function (dbEat) {
@@ -71,14 +72,13 @@ module.exports = function (app) {
             });
 
     });
-    app.post("/api/sleepData", function (req, res) {
-        // // req.body is available since we're using the body parsing middleware    
-        //   sleepArray.push(req.body);
-        //   res.json(true);    
+    app.post("/api/sleepData", function (req, res) { 
         console.log(req.body);
+        console.log(req.body.duration)
         db.Sleep.create({
             timeStart: req.body.timeStart,
             timeEnd: req.body.timeEnd,
+            duration: req.body.duration,
             username: req.body.username
         })
             .then(function (dbSleep) {
@@ -100,8 +100,8 @@ module.exports = function (app) {
                 res.json(dbSleep);
             });
     })
-    app.get("/api/sleepData/:username", function (req, res) {
-        console.log(req.body)
+    app.get("/api/sleepData/", function (req, res) {
+        console.log("request" + req.username)
         db.Sleep.findAll({
             where: {
                 username: "jw"
@@ -111,6 +111,20 @@ module.exports = function (app) {
                 res.json(dbSleep);
             });
     });
+
+    app.get("/api/sleepData/:username", function (req, res) {
+        var username = req.params.username
+        console.log("Username " + username)
+        db.Sleep.findAll({
+            where: {
+                username: username
+            }
+        })
+            .then(function (dbSleep) {
+                res.json(dbSleep);
+            });
+    });
+
 
     app.get("/api/eatingData", function (req, res) {
         db.Eat.findAll({})
