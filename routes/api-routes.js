@@ -74,8 +74,6 @@ module.exports = function (app) {
 
     });
     app.post("/api/sleepData", function (req, res) { 
-        console.log(req.body);
-        console.log(req.body.duration)
         db.Sleep.create({
             timeStart: req.body.timeStart,
             timeEnd: req.body.timeEnd,
@@ -91,7 +89,7 @@ module.exports = function (app) {
         // // req.body is available since we're using the body parsing middleware    
         //   vitalsArray.push(req.body);
         //   res.json(true);   
-        console.log(req.body);
+        
         db.Vitals.create({
             time: req.body.timestamp,
             height: req.body.height,
@@ -104,8 +102,7 @@ module.exports = function (app) {
             });
     })
     app.get("/api/sleepData/:username", function (req, res) {
-        var username = req.params.username
-        console.log("Username " + username)
+        var username = req.params.username       
         db.Sleep.findAll({
             where: {
                 username: username
