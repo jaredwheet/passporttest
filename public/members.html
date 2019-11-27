@@ -87,12 +87,11 @@
         // This file just does a GET request to figure out which user is logged in
         // and updates the HTML on the page
         $.get("/api/user_data").then(function (data) {
-          $(".member-name").text(data.username);
+          // $(".member-name").text(data.username);
           var username = data.username
 
           var lastSleepEntry = "";
           $.get("/api/sleepData/" + username, function (req, res) {
-
           })
             .then(function (data) {
               if (data.length = 0) {
