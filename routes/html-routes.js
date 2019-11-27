@@ -28,10 +28,7 @@ module.exports = function(app) {
   });
 
   app.get("/sleep", isAuthenticated, function(req, res) {
-    if (req.user) {        
-        res.redirect("/sleep.html");
-      }
-      res.sendFile(path.join(__dirname, "../public/signup.html"));
+    res.sendFile(path.join(__dirname, "../public/sleep.html"));
   });
 
   app.get("/signup", function(req, res) {
