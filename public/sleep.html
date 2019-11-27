@@ -86,11 +86,11 @@
     $.get("/api/user_data").then(function (data) {
       // $(".member-name").text(data.username);
       var username = data.username
-      console.log("username is: " + username)
+      
       var sleepingDurations = []
       var graphDates = []
       $.get("/api/sleepData/" + username, function (req, res) {
-        console.log("Request:" + req)
+        
       })
         .then(function (tableData) {
           if (tableData.length == false) {
@@ -144,15 +144,6 @@
     );
 
   })
-
-
-
-
-
-
-
-
-
 
 </script>
 

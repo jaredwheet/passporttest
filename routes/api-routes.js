@@ -114,12 +114,12 @@ module.exports = function (app) {
     });
 
 
-    app.get("/api/eatingData", function (req, res) {
-        db.Eat.findAll({})
-            .then(function (dbEat) {
-                res.json(dbEat);
-            });
-    });
+    // app.get("/api/eatingData", function (req, res) {
+    //     db.Eat.findAll({})
+    //         .then(function (dbEat) {
+    //             res.json(dbEat);
+    //         });
+    // });
 
     app.get("/api/eatingData/:username", function (req, res) {
         var username = req.params.username
@@ -134,12 +134,12 @@ module.exports = function (app) {
             });
     });
 
-    app.get("/api/vitalsData", function (req, res) {
-        db.Vitals.findAll({})
-            .then(function (dbVitals) {
-                res.json(dbVitals);
-            });
-    });
+    // app.get("/api/vitalsData", function (req, res) {
+    //     db.Vitals.findAll({})
+    //         .then(function (dbVitals) {
+    //             res.json(dbVitals);
+    //         });
+    // });
 
     app.get("/api/vitalsData/:username", function (req, res) {
         var username = req.params.username
