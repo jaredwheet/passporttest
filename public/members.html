@@ -5,214 +5,221 @@
   <title>Baby Tracker </title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css">
-  <link href="stylesheets/style.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css">
+  <link href="stylesheets/style.css" rel="stylesheet">
 </head>
 
 <body>
-  <nav class="navbar navbar-default">
+  <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a class="navbar-brand" href="/logout">
-          Logout
-        </a>
-        <h2>Welcome <span class="member-name"></span></h2>
+        <ul class="nav nav-tabs">
+          <li role="presentation" class="active"><a href="/">Home</a></li>
+          <li role="presentation"><a href="/sleep">Sleeping</a></li>
+          <li role="presentation"><a href="/eat">Eating</a></li>
+          <li role="presentation"><a href="/vitals">Vitals</a></li>
+          <li role="presentation">
+            <h3 id="name-nav">Welcome <span class="member-name"></span></h2>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>
 
 
-  <div class="jumbotron jumbotron-fluid">
-    <div class="container">
-      <h1 class="display-4">Baby Tracker</h1>
+  <div class="container">
+    <div class="jumbotron">
+      <h1 class="text-center"><span class="fa fa-fire"></span> Baby Tracker</h1>
+      <hr>
+      <h4 class="text-center">Easily track your baby as they grow!     
     </div>
+    </h2>
+    <br>
   </div>
 
-  <div class="card">
-    <div class="card-header">
-      Baby last ate....
-    </div>
-    <a href="/eat">Eating History</a>
-
-  </div>
-
-  <div class="card">
-    <div class="card-header">
-      Baby last slept
-    </div>
-    <a href="/sleep">Sleeping History</a>
-
-  </div>
-
-  <div class="card">
-    <div class="card-header">
-      Baby vitals
-    </div>
-    <a href="/vitals">Vitals History</a>
-
-  </div>
-
-  <div class="card">
-    <div id="usernameInput" class="card-header">
-      Your username is:
+  <div class="row">
+    <div class="col-sm-6 col-md-4">
+      <div class="thumbnail">
+        <img src="./images/babysleep.jpg" alt="sleeping baby">
+        <div class="caption">
+          <h3>Sleeping</h3>
+          <p> <button type="button" id="sleep" class="btn btn-dark submit">Start Sleep</button>
+        </div>
+        <p>Your baby's last sleeping event: <span class="last-sleep"></span></p>
+      </div>
     </div>
 
-
-  </div>
-
-  <button type="button" id="feed" class="btn btn-dark submit">Start Feeding</button>
-  <a href="/api/eatingData">Eating API</a>
-  <!-- <button type="button" id="endFeed" class="btn btn-dark submit">End Feeding</button> -->
-  <button type="button" id="sleep" class="btn btn-dark submit">Start Sleep</button>
-  <a href="/api/sleepData">Sleep API</a>
-  <!-- <button type="button" id="endSleep" class="btn btn-dark submit">End Sleep</button> -->
-
-  <div class="input-group mb-3">
-    <div class="input-group-prepend">
-      <span class="input-group-text" id="inputGroup-sizing-default">Enter your baby's height</span>
+    <div class="col-sm-6 col-md-4">
+      <div class="thumbnail">
+        <img src="./images/babyeat.jpg" alt="eating baby" height="300" width="350">
+        <div class="caption">
+          <h3>Eating</h3>
+          <p> <button type="button" id="feed" class="btn btn-dark submit">Start Feeding</button>
+        </div>
+        <p>Your baby's last eating event:</p>
+      </div>
     </div>
-    <input type="text" class="form-control" id="height" aria-label="Sizing example input"
-      aria-describedby="inputGroup-sizing-default">
-  </div>
 
-  <div class="input-group mb-3">
-    <div class="input-group-prepend">
-      <span class="input-group-text" id="inputGroup-sizing-default">Enter your baby's weight</span>
+    <div class="col-sm-6 col-md-4">
+      <div class="thumbnail">
+        <img src="./images/babyvitals.jpg" alt="eating baby" height="300" width="350">
+        <div class="caption" id="vitals-form">
+          <h3>Vitals</h3>
+          <div class="input-group">
+            <p>Enter baby's height</p>
+            <input type="number" step=".1" width="10px" class="form-control" id="height"
+              aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            <p>Enter baby's weight </p>
+            <input type="number" step=".1" class="form-control" id="weight" aria-label="Sizing example input"
+              aria-describedby="inputGroup-sizing-default">
+            <button type="button" id="vitalsSubmit" class="btn btn-dark submit">Submit Vitals</button>
+          </div>
+        </div>
+        <p>Your baby's most recent vitals: </p>
+      </div>
     </div>
-    <input type="text" class="form-control" id="weight" aria-label="Sizing example input"
-      aria-describedby="inputGroup-sizing-default">
-  </div>
-  <button type="button" id="vitalsSubmit" class="btn btn-dark submit">Submit Vitals</button>
-  <a href="/api/vitalsData">Vitals API</a>
+
+    <!-- BELOW CODE IS CRITICAL. IT HANDLES HOW FORM DATA IS SENT TO OUR SERVER -->
+    <script type="text/javascript">
+      $(document).ready(function () {
+        // This file just does a GET request to figure out which user is logged in
+        // and updates the HTML on the page
+        $.get("/api/user_data").then(function (data) {
+          $(".member-name").text(data.username);
+          var username = data.username
+
+          var lastSleepEntry = "";
+          $.get("/api/sleepData/" + username, function (req, res) {
+
+          })
+            .then(function (data) {
+              if (data.length = 0) {
+                document.getElementById("element").style.display = "none";
+              } else {
+              for (var i = 0; i < data.length; i++) {
+                lastSleepEntry = data[i]
+              }
+              lastSleepEnd = lastSleepEntry.timeEnd;
+              lastSleepDuration = lastSleepEntry.duration
+              $(".last-nap").text(lastSleepEnd)
+              $(".last-nap-duration").text(lastSleepDuration)
+
+            }
+          })
+
+          $("#feed").on("click", function (event) {
+            event.preventDefault();
+
+            var feedingStartTimestamp = moment().format('LLLL')
+            var feedingDate = moment().format('L')
+            var a = moment()
+
+            // This is used to change button text, to indicated if feeding has been started.
+            var $this = $(this);
+            $this.toggleClass('feedingStarted');
+
+            if ($this.hasClass('feedingStarted')) {
+              $this.text('End Feeding');
+              $this.on("click", function (event) {
+                var feedingEndTimestamp = moment().format('LLLL')
+                var b = moment()
+                var duration = b.diff(a, 'minutes')
+                var newEatingTimestamp = {
+                  timeStart: feedingStartTimestamp,
+                  timeEnd: feedingEndTimestamp,
+                  date: feedingDate,
+                  duration: duration,
+                  username: username,
+                };
+                $.post("/api/eatingData", newEatingTimestamp,
+                  function (data) {
+                    console.log(data)
+                  });
+                location.reload();
+              });
+
+            }
+            else {
+              $this.text('Start Feeding')
 
 
-  <footer>
+            }
+          });
+          $("#sleep").on("click", function (event) {
+            event.preventDefault();
+            var sleepingStartTimestamp = moment().format('LLLL')
+            var date = moment().format('L')
+            //Need the current time to remain a moment object for duration calculation
+            var a = moment()
+            // This is used to change button text, to indicated if feeding has been started.
+            var $this = $(this);
+            $this.toggleClass('sleepingStarted');
 
-  </footer>
+            if ($this.hasClass('sleepingStarted')) {
+              $this.text('End Sleeping');
+              $this.on("click", function (event) {
+                var sleepingEndTimestamp = moment().format('LLLL')
+                // need the end sleep time to remain a moment object for the duration calculation                      
+                var b = moment()
+                var duration = b.diff(a, 'minutes')
+                console.log(duration)
 
-  <!-- BELOW CODE IS CRITICAL. IT HANDLES HOW FORM DATA IS SENT TO OUR SERVER -->
-  <script type="text/javascript">
-    $(document).ready(function () {
-      // This file just does a GET request to figure out which user is logged in
-      // and updates the HTML on the page
-      $.get("/api/user_data").then(function (data) {
-        $(".member-name").text(data.username);
-        var username = data.username
-        $("#feed").on("click", function (event) {
-          event.preventDefault();
+                var newSleepTimestamp = {
+                  timeStart: sleepingStartTimestamp,
+                  timeEnd: sleepingEndTimestamp,
+                  date: date,
+                  duration: duration,
+                  username: username,
+                };
 
-          var feedingStartTimestamp = moment().format('LLLL')
-          var a = moment()
+                $.post("/api/sleepData", newSleepTimestamp,
+                  function (data) {
+                    console.log(data)
+                  });
+                location.reload();
+              });
 
-          // This is used to change button text, to indicated if feeding has been started.
-          var $this = $(this);
-          $this.toggleClass('feedingStarted');
-
-          if ($this.hasClass('feedingStarted')) {
-            $this.text('End Feeding');
-            $this.on("click", function (event) {
-              var feedingEndTimestamp = moment().format('LLLL')
-              var b = moment()
-              var duration = b.diff(a, 'minutes')            
-              var newEatingTimestamp = {
-                timeStart: feedingStartTimestamp,
-                timeEnd: feedingEndTimestamp,
-                duration: duration,
-                username: username,
-              };
-              $.post("/api/eatingData", newEatingTimestamp,
-                function (data) {
-                  console.log(data)
-                });
-              location.reload();
-            });
-
-          }
-          else {
-            $this.text('Start Feeding')
+            }
+            else {
+              $this.text('Start Sleeping')
 
 
-          }
+            }
+          });
+          $("#vitalsSubmit").on("click", function (event) {
+            event.preventDefault();
+            currentTime = moment().format('LLLL')
+            graphDate = moment().format('L')
+
+            var newVitals = {
+              timestamp: currentTime,
+              height: parseFloat($("#height").val().trim()),
+              weight: parseFloat($("#weight").val().trim()),
+              graphDate: graphDate,
+              username: username
+            };
+            console.log("submitting vitals")
+            console.log(newVitals)
+
+            $.post("/api/vitalsData", newVitals,
+              function (data) {
+                console.log(data)
+              });
+            $("#height").val("");
+            $("#weight").val("");
+            alert("Baby Vitals has been submitted and saved!")
+          })
         });
-        $("#sleep").on("click", function (event) {
-          event.preventDefault();
-          var sleepingStartTimestamp = moment().format('LLLL')
-          //Need the current time to remain a moment object for duration calculation
-          var a = moment()
-          // This is used to change button text, to indicated if feeding has been started.
-          var $this = $(this);
-          $this.toggleClass('sleepingStarted');
 
-          if ($this.hasClass('sleepingStarted')) {
-            $this.text('End Sleeping');
-            $this.on("click", function (event) {
-              var sleepingEndTimestamp = moment().format('LLLL')    
-              // need the end sleep time to remain a moment object for the duration calculation                      
-              var b = moment()
-              var duration = b.diff(a, 'minutes')
-              console.log(duration)
-
-              var newSleepTimestamp = {
-                timeStart: sleepingStartTimestamp,
-                timeEnd: sleepingEndTimestamp,
-                duration: duration,
-                username: username,
-              };
-
-              $.post("/api/sleepData", newSleepTimestamp,
-                function (data) {
-                  console.log(data)
-                });
-              location.reload();
-            });
-
-          }
-          else {
-            $this.text('Start Sleeping')
-
-
-          }
-        });
-        $("#vitalsSubmit").on("click", function (event) {
-          event.preventDefault();
-          currentTime = moment().format('LLLL')
-
-          var newVitals = {
-            timestamp: currentTime,
-            height: parseFloat($("#height").val().trim()),
-            weight: parseFloat($("#weight").val().trim()),
-            username: username
-          };
-          console.log("submitting vitals")
-          console.log(newVitals)
-
-          $.post("/api/vitalsData", newVitals,
-            function (data) {
-              console.log(data)
-            });
-          $("#height").val("");
-          $("#weight").val("");
-          alert("Baby Vitals has been submitted and saved!")
-        })
       });
-    });
-    // In this code below we create the Front-end JavaScript which "POSTS" our form data to our express server.
-    // In essence, when the user hits submit, jQuery grabs all of the fields then sends a post request to our api
-    // Our api recognizes the route (/api/tables)... and then runs the associated code (found in api-routes.js).
-    // In this case the associated code "saves" the data to the table-data.js file or waitinglist-data.js file
+    </script>
 
 
 
-
-
-  </script>
-
-
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script type="text/javascript" src="js/members.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/members.js"></script>
 
 </body>
 

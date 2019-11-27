@@ -2,3 +2,68 @@ form.signup,
 form.login {
   margin-top: 50px;
 }
+
+body { padding-top: 70px; }
+
+.thumbnail img {
+  width:300px;
+  height:200px; 
+  padding-top: 25px;
+}
+
+.thumbnail h3, p {
+  text-align: center;
+}
+#vitals-form {
+  text-align: center
+}
+
+div.input-group {
+  display: flex ;
+  /* flex-direction: row; */
+  /* text-align: center; */
+  align-items: center;
+  justify-content: space-evenly;
+  /* margin: auto; */
+  padding-bottom: 5px;
+  /* width: 75px; */
+}
+.input-group .form-control { 
+  width: 75px;
+  margin-left: 5px;
+  margin-right: 5px;
+  }
+
+p.input-group {
+  justify-content: center;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+#member-name-nav {
+  float: right;
+}
+
+div.container-fluid{
+  display: flex;  
+  flex-direction: row;
+}
+
+div.navbar-header {
+  align-self: flex-start;
+}
+
+#name-nav {
+  align-self: flex-end;
+}
+
+/* div.vital-content {
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+} */
+
+div.vital-content h4 {
+  text-align: center;
+}

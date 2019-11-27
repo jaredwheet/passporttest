@@ -64,6 +64,7 @@ module.exports = function (app) {
         db.Eat.create({
             timeStart: req.body.timeStart,
             timeEnd: req.body.timeEnd,
+            date: req.body.date,
             duration: req.body.duration,
             username: req.body.username
         })
@@ -78,6 +79,7 @@ module.exports = function (app) {
         db.Sleep.create({
             timeStart: req.body.timeStart,
             timeEnd: req.body.timeEnd,
+            date: req.body.date,
             duration: req.body.duration,
             username: req.body.username
         })
@@ -94,6 +96,7 @@ module.exports = function (app) {
             time: req.body.timestamp,
             height: req.body.height,
             weight: req.body.weight,
+            graphDate: req.body.graphDate,
             username: req.body.username
         })
             .then(function (dbSleep) {
@@ -133,8 +136,41 @@ module.exports = function (app) {
             });
     });
 
+    app.get("/api/eatingData/:username", function (req, res) {
+        var username = req.params.username
+        console.log("Username " + username)
+        db.Eat.findAll({
+            where: {
+                username: username
+            }
+        })
+            .then(function (dbEat) {
+                res.json(dbEat);
+            });
+    });
+
+    app.get("/api/eatingData/graph", function (req, res) {
+        db.Eat.findAll({})
+            .then(function (dbEat) {
+                res.json(dbEat);
+            });
+    });
+
     app.get("/api/vitalsData", function (req, res) {
         db.Vitals.findAll({})
+            .then(function (dbVitals) {
+                res.json(dbVitals);
+            });
+    });
+
+    app.get("/api/vitalsData/:username", function (req, res) {
+        var username = req.params.username
+        console.log("Username " + username)
+        db.Vitals.findAll({
+            where: {
+                username: username
+            }
+        })
             .then(function (dbVitals) {
                 res.json(dbVitals);
             });

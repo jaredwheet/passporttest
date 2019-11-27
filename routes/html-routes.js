@@ -10,7 +10,7 @@ module.exports = function(app) {
     if (req.user) {
       res.redirect("/members");
     }
-    res.sendFile(path.join(__dirname, "../public/signup.html"));
+    res.sendFile(path.join(__dirname, "../public/login.html"));
   });
 //
   app.get("/login", function(req, res) {
@@ -28,12 +28,16 @@ module.exports = function(app) {
     res.sendFile(path.join(__dirname, "../public/members.html"));
   });
 
-  app.get("/sleep/", isAuthenticated, function(req, res) {
+  app.get("/sleep", isAuthenticated, function(req, res) {
     if (req.user) {
         console.log("username is " + req.user.username)
         res.redirect("/sleep.html");
       }
       res.sendFile(path.join(__dirname, "../public/signup.html"));
+  });
+
+  app.get("/signup", function(req, res) {
+    res.sendFile(path.join(__dirname, "../public/signup.html"));
   });
 
   app.get("/eat", isAuthenticated, function(req, res) {

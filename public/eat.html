@@ -3,22 +3,38 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Tables Page</title>
+  <title>Eating</title>
 
   <!-- Latest compiled and minified CSS & JS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="https://code.jquery.com/jquery.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css">
+  <link href="stylesheets/style.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/abd52233a9.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+
 
 </head>
 
 <body>
 
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <ul class="nav nav-tabs">
+          <li role="presentation"><a href="/">Home</a></li>
+          <li role="presentation"><a href="/sleep">Sleeping</a></li>
+          <li role="presentation" class="active"><a href="/eat">Eating</a></li>
+          <li role="presentation"><a href="/vitals">Vitals</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
   <div class="container">
 
     <div class="jumbotron">
-      <h1 class="text-center"><span class="fa fa-fire"></span> Feeding History</h1>
+      <h1 class="text-center"><i class="fas fa-cookie-bite"></i> Feeding History</h1>
       <hr>
       <h2 class="text-center">Keep track of your baby's feeding progress
     </div>
@@ -26,31 +42,40 @@
     <br>
   </div>
 
-  <div class="row">
-    <div class="col-lg-12">
-
-      <!-- Current Tables in Use -->
+  <div class="row vital-content">
+    <div class="col-sm-12 col-md-4">
       <div class="card">
         <div class="card-header">
-          <h4>Recent Eating Events</h4>
+          <h4>Feeding Entries</h4>
         </div>
-        <div class="card-body">
-          <ul id="tableList" class="list-group"></ul>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Eating Start</th>
+              <th>Eating End</th>
+              <th>Duration (min.)</th>
+            </tr>
+          </thead>
+          <tbody class="eat-table">
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h4>Last 10 feedings</h4>
+        </div>
+        <div class="chart">
+          <canvas id="myChart" width="200" height="200"></canvas>
         </div>
       </div>
-
-
     </div>
+
+
+  </div>
   </div>
 
-  <!-- 
-  <footer class="footer mt-4">
-    <div class="container">
-      <p>Control Panel</p>
-      <p><a href="#" id="clear">Clear Table</a> | <a href="/api/tables">API Table Link</a> | <a href="/api/waitlist">API
-          Wait List</a>
-    </div>
-  </footer> -->
 
   </div>
 
@@ -59,93 +84,83 @@
 
 <!-- BELOW CODE IS CRITICAL. IT HANDLES HOW FORM DATA IS LOADED FROM OUR SERVER -->
 <script type="text/javascript">
-
-  // In this code, jQuery is used to "download" the data from our server
-  // We then dynamically display this content in our table. This is very similar to the group projects you just completed.
-  // It's also very similar to the NYT search application. In fact, I copied a ton of code from there.
-
-  function runFeedingQuery() {
-    // The AJAX function uses the URL of our API to GET the data associated with it (initially set to localhost)
-    $.ajax({ url: "/api/eatingData", method: "GET" })
-      .then(function (tableData) {
-
-        // Here we then log the tableData to console, where it will show up as an object.
-        console.log(tableData);
-        console.log("------------------------------------");
-        // Loop through and display each of the customers
-        for (var i = 0; i < tableData.length; i++) {
-
-          // Get a reference to the tableList element and populate it with tables
-          var tableList = $("#tableList");
-
-          // Then display the fields in the HTML (Section Name, Date, URL)
-          var listItem = $("<li class='list-group-item mt-4'>");
-
-          listItem.append(
-            $("<h6>").text("Eating Start: " + tableData[i].timeStart),
-            $("<h6>").text("Eating End: " + tableData[i].timeEnd),
-            $("<h6>").text("Eating Duration: " + tableData[i].duration + " minutes")
-          );
-
-          tableList.append(listItem);
-        }
-      })
-  }
+  $(document).ready(function () {
+    $.get("/api/user_data").then(function (data) {
+      $(".member-name").text(data.username);
+      var username = data.username
+      console.log("username is: " + username)
 
 
+      var feedingDurations = []
+      var graphDates = []
 
-  // function runWaitListQuery() {
+      // The AJAX function uses the URL of our API to GET the data associated with it (initially set to localhost)
+      $.ajax({ url: "/api/eatingData/" + username, method: "GET" })
+        .then(function (tableData) {
+          if (tableData.length == false) {
+            alert("You have not entered any eating events yet!  Go back to the home page to get started!")
+          } else {
 
-  //   // The AJAX function uses the URL of our API to GET the data associated with it (initially set to localhost)
-  //   $.ajax({ url: "/api/waitlist", method: "GET" })
-  //     .then(function(waitData) {
+            // Loop through 
+            for (var i = 0; i < tableData.length & i < 10; i++) {
+              var tableList = $(".eat-table");
+              var listItem = $("<tr>");
 
-  //       // Here we then log the waitlistData to console, where it will show up as an object.
-  //       console.log(waitData);
-  //       console.log("------------------------------------");
+              listItem.append(
+                $("<td>").text(tableData[i].timeStart),
+                $("<td>").text(tableData[i].timeEnd),
+                $("<td>").text(tableData[i].duration)
+              );
 
-  //       // Loop through and display each of the customers
-  //       for (var i = 0; i < waitData.length; i++) {
+              tableList.append(listItem);
 
-  //         // Get a reference to the waitList element and populate it with tables
-  //         var waitList = $("#waitList");
+              feedingDurations.push(tableData[i].duration)
+              graphDates.push(tableData[i].date)
+              // Get a reference to the tableList element and populate it with tables
+              var tableList = $("#tableList");
+              // Then display the fields in the HTML (Section Name, Date, URL)
+              var listItem = $("<li class='list-group-item mt-4'>");
+              listItem.append(
+                $("<h6>").text("Eating Start: " + tableData[i].timeStart),
+                $("<h6>").text("Eating End: " + tableData[i].timeEnd),
+                $("<h6>").text("Eating Duration: " + tableData[i].duration + " minutes")
+              );
 
-  //         // Then display the fields in the HTML (Section Name, Date, URL)
-  //         var listItem = $("<li class='list-group-item mt-4'>");
+              tableList.append(listItem);
+              var ctx = document.getElementById('myChart');
+              var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                  labels: graphDates,
+                  datasets: [{
+                    label: 'Feeding duration in minutes',
+                    data: feedingDurations,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    hoverBackgroundColor: 'yellow',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  scales: {
+                    yAxes: [{
+                      ticks: {
+                        beginAtZero: true
+                      }
+                    }]
+                  }
+                }
+              });
+            }
+          }
+        })
+    })
+  })
 
-  //         listItem.append(
-  //           $("<h2>").text("Table #" + (i + 1)),
-  //           $("<hr>"),
-  //           $("<h2>").text("ID: " + waitData[i].customerID),
-  //           $("<h2>").text("Name: " + waitData[i].customerName),
-  //           $("<h2>").text("Email: " + waitData[i].customerEmail),
-  //           $("<h2>").text("Phone: " + waitData[i].phoneNumber)
-  //         );
-
-  //         waitList.append(listItem);
-  //       }
-  //     });
-  // }
-
-  // This function resets all of the data in our tables. This is intended to let you restart a demo.
-  // function clearTable() {
-  //   alert("Clearing...");
-
-  //   // Clear the tables on the server and then empty the elements on the client
-  //   $.ajax({ url: "/api/clear", method: "POST" }).then(function() {
-  //     $("#waitList").empty();
-  //     $("#tableList").empty();
-  //   });
-  // }
-
-  // $("#clear").on("click", clearTable);
 
 
-  // Run Queries!
-  // ==========================================
-  // runTableQuery();
-  // runWaitListQuery();
-  runFeedingQuery();
+
 
 
 </script>

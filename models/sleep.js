@@ -1,13 +1,17 @@
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   var Sleep = sequelize.define("Sleep", {
     timeStart: {
       type: DataTypes.STRING,
       allowNull: false,
-         
+
     },
     timeEnd: {
       type: DataTypes.STRING,
-      allowNull: false,        
+      allowNull: false,
+    },
+    date: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     duration: {
       type: DataTypes.STRING,
@@ -15,9 +19,9 @@ module.exports = function(sequelize, DataTypes) {
     },
     username: {
       type: DataTypes.STRING,
-      allowNull: false,        
+      allowNull: false,
     },
-    
+
   })
   return Sleep;
 };
