@@ -89,68 +89,66 @@
       console.log("username is: " + username)
       var sleepingDurations = []
       var graphDates = []
-
-
       $.get("/api/sleepData/" + username, function (req, res) {
         console.log("Request:" + req)
       })
         .then(function (tableData) {
           if (tableData.length == false) {
-          alert("You have not entered any sleep events.  Go back to the homepage to get started")
+            alert("You have not entered any sleep events.  Go back to the homepage to get started")
           } else {
 
             for (var i = 0; i < tableData.length & i < 10; i++) {
               var tableList = $(".sleep-table")
               var listItem = $("<tr>");
-                
-                listItem.append(
-                  $("<td>").text(tableData[i].timeStart),
-                    $("<td>").text(tableData[i].timeEnd),
-                      $("<td>").text(tableData[i].duration)
-                        );
-                        tableList.append(listItem);
-                        ;
-            sleepingDurations.push(tableData[i].duration)
-            graphDates.push(tableData[i].date)
-            
-            var ctx = document.getElementById('myChart');
-            var myChart = new Chart(ctx, {
-              type: 'bar',
-              data: {
-                labels: graphDates,
-                datasets: [{
-                  label: 'Sleeping duration in minutes',
-                  data: sleepingDurations,
-                  backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                  hoverBackgroundColor: 'yellow',
-                  borderColor: 'rgba(255, 99, 132, 1)',
-                  borderWidth: 1
-                }]
-              },
-              options: {
-                responsive: true,
-                scales: {
-                  yAxes: [{
-                    ticks: {
-                      beginAtZero: true
-                    }
+
+              listItem.append(
+                $("<td>").text(tableData[i].timeStart),
+                $("<td>").text(tableData[i].timeEnd),
+                $("<td>").text(tableData[i].duration)
+              );
+              tableList.append(listItem);
+              ;
+              sleepingDurations.push(tableData[i].duration)
+              graphDates.push(tableData[i].date)
+
+              var ctx = document.getElementById('myChart');
+              var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                  labels: graphDates,
+                  datasets: [{
+                    label: 'Sleeping duration in minutes',
+                    data: sleepingDurations,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    hoverBackgroundColor: 'yellow',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
                   }]
+                },
+                options: {
+                  responsive: true,
+                  scales: {
+                    yAxes: [{
+                      ticks: {
+                        beginAtZero: true
+                      }
+                    }]
+                  }
                 }
-              }
-            });
+              });
+            }
           }
-        }
         })
-      }
-      
-      );
-      
-    })
-    
-    
-    
-    
-    
+    }
+
+    );
+
+  })
+
+
+
+
+
 
 
 

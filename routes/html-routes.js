@@ -14,7 +14,6 @@ module.exports = function(app) {
   });
 //
   app.get("/login", function(req, res) {
-    // If the user already has an account send them to the members page
     if (req.user) {
       res.redirect("/members");
     }
@@ -29,8 +28,7 @@ module.exports = function(app) {
   });
 
   app.get("/sleep", isAuthenticated, function(req, res) {
-    if (req.user) {
-        console.log("username is " + req.user.username)
+    if (req.user) {        
         res.redirect("/sleep.html");
       }
       res.sendFile(path.join(__dirname, "../public/signup.html"));

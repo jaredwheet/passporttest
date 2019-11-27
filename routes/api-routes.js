@@ -103,18 +103,6 @@ module.exports = function (app) {
                 res.json(dbSleep);
             });
     })
-    app.get("/api/sleepData/", function (req, res) {
-        console.log("request" + req.username)
-        db.Sleep.findAll({
-            where: {
-                username: "jw"
-            }
-        })
-            .then(function (dbSleep) {
-                res.json(dbSleep);
-            });
-    });
-
     app.get("/api/sleepData/:username", function (req, res) {
         var username = req.params.username
         console.log("Username " + username)
@@ -144,13 +132,6 @@ module.exports = function (app) {
                 username: username
             }
         })
-            .then(function (dbEat) {
-                res.json(dbEat);
-            });
-    });
-
-    app.get("/api/eatingData/graph", function (req, res) {
-        db.Eat.findAll({})
             .then(function (dbEat) {
                 res.json(dbEat);
             });

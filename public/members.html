@@ -33,7 +33,7 @@
     <div class="jumbotron">
       <h1 class="text-center"><span class="fa fa-fire"></span> Baby Tracker</h1>
       <hr>
-      <h4 class="text-center">Easily track your baby as they grow!     
+      <h4 class="text-center">Easily track your baby as they grow!
     </div>
     </h2>
     <br>
@@ -90,23 +90,23 @@
           // $(".member-name").text(data.username);
           var username = data.username
 
-          var lastSleepEntry = "";
-          $.get("/api/sleepData/" + username, function (req, res) {
-          })
-            .then(function (data) {
-              if (data.length = 0) {
-                document.getElementById("element").style.display = "none";
-              } else {
-              for (var i = 0; i < data.length; i++) {
-                lastSleepEntry = data[i]
-              }
-              lastSleepEnd = lastSleepEntry.timeEnd;
-              lastSleepDuration = lastSleepEntry.duration
-              $(".last-nap").text(lastSleepEnd)
-              $(".last-nap-duration").text(lastSleepDuration)
+          // var lastSleepEntry = "";
+          // $.get("/api/sleepData/" + username, function (req, res) {
+          // })
+          //   .then(function (data) {
+          //     if (data.length = 0) {
+          //       document.getElementById("element").style.display = "none";
+          //     } else {
+          //     for (var i = 0; i < data.length; i++) {
+          //       lastSleepEntry = data[i]
+          //     }
+          //     lastSleepEnd = lastSleepEntry.timeEnd;
+          //     lastSleepDuration = lastSleepEntry.duration
+          //     $(".last-nap").text(lastSleepEnd)
+          //     $(".last-nap-duration").text(lastSleepDuration)
 
-            }
-          })
+          //   }
+          // })
 
           $("#feed").on("click", function (event) {
             event.preventDefault();
