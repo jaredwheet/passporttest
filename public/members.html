@@ -9,6 +9,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css">
   <link href="stylesheets/style.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/abd52233a9.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
@@ -20,18 +23,17 @@
           <li role="presentation"><a href="/sleep">Sleeping</a></li>
           <li role="presentation"><a href="/eat">Eating</a></li>
           <li role="presentation"><a href="/vitals">Vitals</a></li>
-          <li role="presentation">
-            <h3 id="name-nav">Welcome <span class="member-name"></span></h2>
-          </li>
+          <li role="presentation"><a href="/logout">Logout</a></li>
         </ul>
       </div>
+      <h3 id="name-nav" class="nav-btn">Welcome <span class="member-name"></span></h2>
     </div>
   </nav>
 
 
   <div class="container">
     <div class="jumbotron">
-      <h1 class="text-center"><span class="fa fa-fire"></span> Baby Tracker</h1>
+      <h1 class="text-center"><i class="fas fa-baby"></i></span> Baby Tracker</h1>
       <hr>
       <h4 class="text-center">Easily track your baby as they grow!
     </div>
@@ -40,44 +42,44 @@
   </div>
 
   <div class="row">
-    <div class="col-sm-6 col-md-4">
+    <div class="col-sm-12 col-md-4">
       <div class="thumbnail">
+        <h3>Sleeping</h3>
         <img src="./images/babysleep.jpg" alt="sleeping baby">
         <div class="caption">
-          <h3>Sleeping</h3>
           <p> <button type="button" id="sleep" class="btn btn-dark submit">Start Sleep</button>
         </div>
-        <p>Your baby's last sleeping event: <span class="last-sleep"></span></p>
+
       </div>
     </div>
 
-    <div class="col-sm-6 col-md-4">
+    <div class="col-sm-12 col-md-4">
       <div class="thumbnail">
+        <h3>Eating</h3>
         <img src="./images/babyeat.jpg" alt="eating baby" height="300" width="350">
         <div class="caption">
-          <h3>Eating</h3>
           <p> <button type="button" id="feed" class="btn btn-dark submit">Start Feeding</button>
         </div>
-        <p>Your baby's last eating event:</p>
+
       </div>
     </div>
 
-    <div class="col-sm-6 col-md-4">
+    <div class="col-sm-12 col-md-4">
       <div class="thumbnail">
+        <h3>Vitals</h3>
         <img src="./images/babyvitals.jpg" alt="eating baby" height="300" width="350">
         <div class="caption" id="vitals-form">
-          <h3>Vitals</h3>
           <div class="input-group">
             <p>Enter baby's height</p>
-            <input type="number" step=".1" width="10px" class="form-control" id="height"
+            <input type="number" required value="0.0" step=".1" width="10px" class="form-control" id="height"
               aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             <p>Enter baby's weight </p>
-            <input type="number" step=".1" class="form-control" id="weight" aria-label="Sizing example input"
-              aria-describedby="inputGroup-sizing-default">
+            <input type="number" required value="0.0" step=".1" class="form-control" id="weight"
+              aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             <button type="button" id="vitalsSubmit" class="btn btn-dark submit">Submit Vitals</button>
           </div>
         </div>
-        <p>Your baby's most recent vitals: </p>
+
       </div>
     </div>
 
@@ -87,26 +89,8 @@
         // This file just does a GET request to figure out which user is logged in
         // and updates the HTML on the page
         $.get("/api/user_data").then(function (data) {
-          // $(".member-name").text(data.username);
+          $(".member-name").text(data.username);
           var username = data.username
-
-          // var lastSleepEntry = "";
-          // $.get("/api/sleepData/" + username, function (req, res) {
-          // })
-          //   .then(function (data) {
-          //     if (data.length = 0) {
-          //       document.getElementById("element").style.display = "none";
-          //     } else {
-          //     for (var i = 0; i < data.length; i++) {
-          //       lastSleepEntry = data[i]
-          //     }
-          //     lastSleepEnd = lastSleepEntry.timeEnd;
-          //     lastSleepDuration = lastSleepEntry.duration
-          //     $(".last-nap").text(lastSleepEnd)
-          //     $(".last-nap-duration").text(lastSleepDuration)
-
-          //   }
-          // })
 
           $("#feed").on("click", function (event) {
             event.preventDefault();
@@ -121,6 +105,8 @@
 
             if ($this.hasClass('feedingStarted')) {
               $this.text('End Feeding');
+              $this.css("background-color", "#3bffcb")
+              $this.css("color", "navy")
               $this.on("click", function (event) {
                 var feedingEndTimestamp = moment().format('LLLL')
                 var b = moment()
@@ -142,6 +128,8 @@
             }
             else {
               $this.text('Start Feeding')
+              $this.css("color", "white")
+              $this.css("background-color", "#ff3bb7")
 
 
             }
@@ -157,6 +145,8 @@
             $this.toggleClass('sleepingStarted');
 
             if ($this.hasClass('sleepingStarted')) {
+              $this.css("background-color", "#3bffcb")
+              $this.css("color", "navy")
               $this.text('End Sleeping');
               $this.on("click", function (event) {
                 var sleepingEndTimestamp = moment().format('LLLL')
@@ -182,7 +172,9 @@
 
             }
             else {
-              $this.text('Start Sleeping')
+              $this.text('Start Sleeping')              
+              $this.css("color", "white")
+              $this.css("background-color", "#ff3bb7")
 
 
             }

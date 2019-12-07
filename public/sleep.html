@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
-    <meta charset="UTF-8">
-    <title>Tables Page</title>
-    
-    <!-- Latest compiled and minified CSS & JS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://code.jquery.com/jquery.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css">
-    <link href="stylesheets/style.css" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/abd52233a9.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
-    
+<head>
+  <meta charset="UTF-8">
+  <title>Tables Page</title>
+
+  <!-- Latest compiled and minified CSS & JS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://code.jquery.com/jquery.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css">
+  <link href="stylesheets/style.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/abd52233a9.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
@@ -21,12 +22,14 @@
     <div class="container-fluid">
       <div class="navbar-header">
         <ul class="nav nav-tabs">
-          <li role="presentation"><a href="/">Home</a></li>
+          <li role="presentation"><a href="/members">Home</a></li>
           <li role="presentation" class="active"><a href="/sleep">Sleeping</a></li>
           <li role="presentation"><a href="/eat">Eating</a></li>
           <li role="presentation"><a href="/vitals">Vitals</a></li>
+          <li role="presentation"><a href="/logout">Logout</a></li>
         </ul>
       </div>
+      <h3 id="name-nav" class="nav-btn">Welcome <span class="member-name"></span></h2>
     </div>
   </nav>
 
@@ -35,13 +38,14 @@
     <div class="jumbotron">
       <h1 class="text-center"><i class="fas fa-bed"></i> Sleeping History</h1>
       <hr>
-      <h2 class="text-center">Keep track of your baby's sleeping progress
+      <h4 class="text-center">Keep track of your baby's sleeping progress
+      </h4>
     </div>
-    </h2>
     <br>
   </div>
 
   <div class="row vital-content">
+    <div class="col-sm-0 col-md-1"></div>
     <div class="col-sm-12 col-md-4">
       <div class="card">
         <div class="card-header">
@@ -60,6 +64,7 @@
         </table>
       </div>
     </div>
+    <div class="col-sm-0 col-md-2"></div>
     <div class="col-sm-12 col-md-4">
       <div class="card">
         <div class="card-header">
@@ -69,6 +74,7 @@
           <canvas id="myChart" width="200" height="200"></canvas>
         </div>
       </div>
+      <div class="col-sm-0 col-md-1"></div>
 
 
     </div>
@@ -83,21 +89,63 @@
 <script type="text/javascript">
 
   $(document).ready(function () {
+    var lastTenEvents = []
     $.get("/api/user_data").then(function (data) {
-      // $(".member-name").text(data.username);
+      $(".member-name").text(data.username);
       var username = data.username
-      
+
       var sleepingDurations = []
       var graphDates = []
       $.get("/api/sleepData/" + username, function (req, res) {
-        
+
       })
         .then(function (tableData) {
           if (tableData.length == false) {
             alert("You have not entered any sleep events.  Go back to the homepage to get started")
-          } else {
+          } else if (tableData.length <= 10) {
+            var tableList = $(".sleep-table")
+            var listItem = $("<tr>");
 
-            for (var i = 0; i < tableData.length & i < 10; i++) {
+            listItem.append(
+              $("<td>").text(tableData[i].timeStart),
+              $("<td>").text(tableData[i].timeEnd),
+              $("<td>").text(tableData[i].duration)
+            );
+            tableList.append(listItem);
+            ;
+            sleepingDurations.push(tableData[i].duration)
+            graphDates.push(tableData[i].date)
+            var ctx = document.getElementById('myChart');
+              var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                  labels: graphDates,
+                  datasets: [{
+                    label: 'Sleeping duration in minutes',
+                    data: sleepingDurations,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    hoverBackgroundColor: 'yellow',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  scales: {
+                    yAxes: [{
+                      ticks: {
+                        beginAtZero: true
+                      }
+                    }]
+                  }
+                }
+              });
+          }
+
+          else {
+
+            for (var i = tableData.length - 10; i < tableData.length; i++) {              
+
               var tableList = $(".sleep-table")
               var listItem = $("<tr>");
 

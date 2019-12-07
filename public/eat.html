@@ -12,37 +12,37 @@
   <link href="stylesheets/style.css" rel="stylesheet">
   <script src="https://kit.fontawesome.com/abd52233a9.js" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
-
-
+  <link href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap" rel="stylesheet">
 </head>
 
 <body>
-
   <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
       <div class="navbar-header">
         <ul class="nav nav-tabs">
-          <li role="presentation"><a href="/">Home</a></li>
+          <li role="presentation"><a href="/members">Home</a></li>
           <li role="presentation"><a href="/sleep">Sleeping</a></li>
           <li role="presentation" class="active"><a href="/eat">Eating</a></li>
           <li role="presentation"><a href="/vitals">Vitals</a></li>
+          <li role="presentation"><a href="/logout">Logout</a></li>
         </ul>
       </div>
+      <h3 id="name-nav" class="nav-btn">Welcome <span class="member-name"></span></h2>
     </div>
   </nav>
 
   <div class="container">
-
     <div class="jumbotron">
       <h1 class="text-center"><i class="fas fa-cookie-bite"></i> Feeding History</h1>
       <hr>
-      <h2 class="text-center">Keep track of your baby's feeding progress
+      <h4 class="text-center">Keep track of your baby's feeding progress
+      </h4>
     </div>
-    </h2>
     <br>
   </div>
 
   <div class="row vital-content">
+    <div class="col-sm-0 col-md-1"></div>
     <div class="col-sm-12 col-md-4">
       <div class="card">
         <div class="card-header">
@@ -61,6 +61,7 @@
         </table>
       </div>
     </div>
+    <div class="col-sm-0 col-md-2"></div>
     <div class="col-sm-12 col-md-4">
       <div class="card">
         <div class="card-header">
@@ -69,6 +70,7 @@
         <div class="chart">
           <canvas id="myChart" width="200" height="200"></canvas>
         </div>
+        <div class="col-sm-0 col-md-1"></div>
       </div>
     </div>
 
@@ -86,7 +88,7 @@
 <script type="text/javascript">
   $(document).ready(function () {
     $.get("/api/user_data").then(function (data) {
-      // $(".member-name").text(data.username);
+      $(".member-name").text(data.username);
       var username = data.username
       console.log("username is: " + username)
 
@@ -99,10 +101,63 @@
         .then(function (tableData) {
           if (tableData.length == false) {
             alert("You have not entered any eating events yet!  Go back to the home page to get started!")
-          } else {
+          } else if (tableData.length <= 10) {
+            for (var i = 0; i < tableData.length; i++) {
+              var tableList = $(".eat-table");
+              var listItem = $("<tr>");
 
-            // Loop through 
-            for (var i = 0; i < tableData.length & i < 10; i++) {
+              listItem.append(
+                $("<td>").text(tableData[i].timeStart),
+                $("<td>").text(tableData[i].timeEnd),
+                $("<td>").text(tableData[i].duration)
+              );
+
+              tableList.append(listItem);
+
+              feedingDurations.push(tableData[i].duration)
+              graphDates.push(tableData[i].date)
+              // Get a reference to the tableList element and populate it with tables
+              var tableList = $("#tableList");
+              // Then display the fields in the HTML (Section Name, Date, URL)
+              var listItem = $("<li class='list-group-item mt-4'>");
+              listItem.append(
+                $("<h6>").text("Eating Start: " + tableData[i].timeStart),
+                $("<h6>").text("Eating End: " + tableData[i].timeEnd),
+                $("<h6>").text("Eating Duration: " + tableData[i].duration + " minutes")
+              );
+
+              tableList.append(listItem);
+              var ctx = document.getElementById('myChart');
+              var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                  labels: graphDates,
+                  datasets: [{
+                    label: 'Feeding duration in minutes',
+                    data: feedingDurations,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    hoverBackgroundColor: 'yellow',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  scales: {
+                    yAxes: [{
+                      ticks: {
+                        beginAtZero: true
+                      }
+                    }]
+                  }
+                }
+              });
+            }
+          }
+          else {
+
+            // Loop through 10 most recent events 
+            for (var i = tableData.length - 10; i < tableData.length; i++) {
               var tableList = $(".eat-table");
               var listItem = $("<tr>");
 

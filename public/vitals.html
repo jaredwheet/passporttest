@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css">
   <link href="stylesheets/style.css" rel="stylesheet">
   <script src="https://kit.fontawesome.com/abd52233a9.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap" rel="stylesheet">
 
 
 
@@ -22,12 +23,15 @@
     <div class="container-fluid">
       <div class="navbar-header">
         <ul class="nav nav-tabs">
-          <li role="presentation"><a href="/">Home</a></li>
+          <li role="presentation"><a href="/members">Home</a></li>
           <li role="presentation"><a href="/sleep">Sleeping</a></li>
           <li role="presentation"><a href="/eat">Eating</a></li>
           <li role="presentation" class="active"><a href="/vitals">Vitals</a></li>
+          <li role="presentation"><a href="/logout">Logout</a></li>
         </ul>
       </div>
+      <h3 id="name-nav" class="nav-btn">Welcome <span class="member-name"></span></h2>
+
     </div>
   </nav>
 
@@ -36,18 +40,19 @@
     <div class="jumbotron">
       <h1 class="text-center"><i class="fas fa-weight"></i></i> Vitals History</h1>
       <hr>
-      <h2 class="text-center">Keep track of your baby's height and weight!
+      <h4 class="text-center">Keep track of your baby's height and weight!
+      </h4>
     </div>
-    </h2>
     <br>
   </div>
 
 
   <div class="row vital-content">
+    <div class="col-sm-0 col-md-1"></div>
     <div class="col-sm-12 col-md-4">
       <div class="card">
         <div class="card-header">
-          <h4>Vitals Entries</h4>
+          <h4>Last 10 Vitals Entries</h4>
         </div>
         <table class="table table-hover">
           <thead>
@@ -62,6 +67,7 @@
         </table>
       </div>
     </div>
+    <div class="col-sm-0 col-md-2"></div>
     <div class="col-sm-12 col-md-4">
       <div class="card">
         <div class="card-header">
@@ -70,6 +76,7 @@
         <div class="chart">
           <canvas id="myChart" width="200" height="200"></canvas>
         </div>
+        <div class="col-sm-0 col-md-1"></div>
       </div>
 
     </div>
@@ -83,7 +90,7 @@
 
   $(document).ready(function () {
     $.get("/api/user_data").then(function (data) {
-      // $(".member-name").text(data.username);
+      $(".member-name").text(data.username);
       var username = data.username
       console.log("username is: " + username)
 
@@ -95,9 +102,65 @@
         .then(function (tableData) {
           if (tableData == false) {
             alert("You have not entered any vitals information! Go back to Home to get started")
-          } else {
+          } else if (tableData.length <= 10) {
+            for (var i = 0; i < tableData.length; i++) {
+              var tableList = $(".vitals-table");
 
-            for (var i = 0; i < tableData.length & i < 10; i++) {
+              // // Then display the fields in the HTML (Section Name, Date, URL)
+              var listItem = $("<tr>");
+
+              listItem.append(
+                $("<td>").text(tableData[i].time),
+                $("<td>").text(tableData[i].height),
+                $("<td>").text(tableData[i].weight)
+              );
+
+              tableList.append(listItem);
+              graphHeights.push(tableData[i].height);
+              graphWeights.push(tableData[i].weight);
+              graphDates.push(tableData[i].graphDate);
+            }
+            console.log("Heights: " + graphHeights)
+            console.log("Weights: " + graphWeights)
+            console.log("Dates: " + graphDates)
+
+            var ctx = document.getElementById('myChart');
+            var myChart = new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels: graphDates,
+                datasets: [{
+                  borderColor: 'navy',
+                  pointBackgroundColor: 'yellow',
+                  label: 'Height',
+                  data: graphHeights,
+                  borderWidth: 2
+                },
+                {
+                  label: 'Weight',
+                  data: graphWeights,
+                  borderWidth: 2,
+                  borderColor: 'red',
+                  pointBackgroundColor: 'white',
+                }
+                ]
+              },
+              options: {
+                responsive: true,
+                scales: {
+                  yAxes: [{
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  }]
+                }
+              }
+            });
+          }
+
+          else {
+
+            for (var i = tableData.length - 10; i < tableData.length; i++) {
               var tableList = $(".vitals-table");
 
               // // Then display the fields in the HTML (Section Name, Date, URL)

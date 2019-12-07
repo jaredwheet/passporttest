@@ -3,12 +3,31 @@ form.login {
   margin-top: 50px;
 }
 
-body { padding-top: 70px; }
+body { 
+  padding-top: 70px;
+  font-family: Verdana, Geneva, sans-serif;
+  color: black;
+}
+
+.navbar-default {
+  border-color: lightblue
+}
+
+.jumbotron {   
+  border: 1px solid lightblue;
+  border-radius: 4px;
+  
+}
 
 .thumbnail img {
   width:300px;
   height:200px; 
-  padding-top: 25px;
+  /* padding-top: 25px; */
+}
+
+.thumbnail {  
+  border: 1px solid lightblue;
+  border-radius: 4px;
 }
 
 .thumbnail h3, p {
@@ -32,7 +51,7 @@ div.input-group {
   width: 75px;
   margin-left: 5px;
   margin-right: 5px;
-  }
+}
 
 p.input-group {
   justify-content: center;
@@ -40,30 +59,62 @@ p.input-group {
   margin-bottom: auto;
 }
 
-#member-name-nav {
-  float: right;
-}
-
 div.container-fluid{
   display: flex;  
-  flex-direction: row;
+  flex-direction: row;  
 }
-
-div.navbar-header {
-  align-self: flex-start;
-}
-
-#name-nav {
-  align-self: flex-end;
-}
-
-/* div.vital-content {
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-} */
 
 div.vital-content h4 {
   text-align: center;
 }
+
+.nav-btn {
+  margin-left: auto;
+}
+
+button, .btn {
+  background-color: #ff3bb7;
+  border-radius: 10px;
+  padding: 5px;
+  color: white;
+}
+
+
+
+
+h4 {
+  color: #ff3bb7
+}
+
+/* .navbar-fixed-top {
+  margin: 0;
+  padding: 0;
+  border-width: 0;
+} */
+
+.nav-tabs>li>a {
+  color: #ff3bb7;
+  background-color: white;
+}
+
+/* .container-fluid {
+  width: 100%;
+  padding: 0px;
+} */
+
+.nav-tabs>li.active>a {
+  color: white;
+  background-color: #ff3bb7;
+}
+
+.row {
+  margin-left: 0px;
+  margin-right: 0px
+}
+
+.fas {
+  color: #ff3bb7
+}
+.navbar {
+  border-width: 0px,1px,2px,1px;
+  }

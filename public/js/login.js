@@ -31,6 +31,7 @@ $(document).ready(function() {
       window.location.replace(data);
       // If there's an error, log the error
     }).catch(function(err) {
+      alert("Username and or password invalid")
       console.log(err);
     });
   }
